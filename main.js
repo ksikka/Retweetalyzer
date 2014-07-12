@@ -1,25 +1,24 @@
-
 var templates = {
     filter_input: [
 '          <p>',
-'            <select class="form-control">',
+'            <select class="filter-data-include form-control">',
 '              <option>Show</option>',
 '              <option>Hide</option>',
 '            </select>',
 '          retweets where',
-'            <select class="form-control code-font">',
+'            <select class="filter-data-field form-control code-font">',
 '              <option>user.description</option>',
 '              <option>user.screen_name</option>',
 '            </select>',
 '',
-'            <select class="form-control">',
+'            <select class="filter-data-operation form-control">',
 '              <option>contains</option>',
 '              <option>is exactly</option>',
 '            </select>',
 '',
-'            <input class="form-control" size="10" type="text" placeholder="some text"/>',
+'            <input class="filter-data-datavalue form-control" size="10" type="text" placeholder="some text"/>',
 '',
-'            <button class="form-control btn btn-primary glyphicon glyphicon-plus"></button>',
+'            <button class="form-control btn btn-primary glyphicon glyphicon-plus filter-add-button"></button>',
 '          </p>',
 '      </div>'].join('\n'),
     tweet: _.template('<div class="col-md-6"><div class="tweet-group">' +
@@ -41,7 +40,53 @@ var tweets, retweet_data;
 /* in a tweet/retweet object, there's a little attribute called _state, this is an object completely application controlled, not given by the API. */
 
 var retweetFilters = [];
-retweetFilters.push({predicate_fn:function(thing) { return thing.user.screen_name.indexOf('imran') === 0; }}); // XXX for testing
+//retweetFilters.push({predicate_fn:function(thing) { return thing.user.screen_name.indexOf('imran') === 0; }}); // XXX for testing
+
+var constructFilter = function(toIncludeOrExclude, field, operation, data) {
+    var filter = {
+        toInclude: toIncludeOrExclude,
+        field: field,
+        operation: operation,
+        data: data,
+        predicate_fn: function(thing) {
+            if (operation === 'contains' && thing.user[field].toLowerCase().indexOf(data.toLowerCase()) !== -1) {
+                return toIncludeOrExclude;
+            } else if (operation === 'equals' && thing.user[field].toLowerCase() === data.toLowerCase()) {
+                return toIncludeOrExclude;
+            } else {
+                alert('oops');
+            }
+        }
+    };
+    return filter;
+};
+
+var addFilter = function(filter) {
+    retweetFilters.push(filter);
+    // todo update ui
+    _.each(retweet_data, function(rt_list) { applyFilters(rt_list, retweetFilters) });
+    renderResults();
+};
+var removeFilter = function(filter) {
+    var index = retweetFilters.indexOf(filter);
+    retweetFilters.splice(index, 1);
+    // todo update ui
+};
+
+var bindFilterUIEvents = function() {
+    $('#filter-entry-area').delegate('.filter-add-button', 'click', function() {
+        var includeIndex = $('select.filter-data-include')[0].selectedIndex;
+        var fieldIndex = $('select.filter-data-field')[0].selectedIndex;
+        var operationIndex = $('select.filter-data-operation')[0].selectedIndex;
+        var dataValue = $('input.filter-data-datavalue').val();
+
+        var filter = constructFilter([true, false][includeIndex],
+                                     ['description','screen_name'][fieldIndex],
+                                     ['contains', 'equals'][operationIndex],
+                                     dataValue);
+        addFilter(filter);
+    });
+};
 
 var renderFilterInput = function() {
     $('#filter-entry-area').html(templates.filter_input);
@@ -63,10 +108,6 @@ var applyFilters = function(collection, filters) {
 };
 
 
-setTimeout(function() {
-    _.each(retweet_data, function(rt_list) { applyFilters(rt_list, retweetFilters) });
-    renderResults();
-}, 2000);
 
 /* For each tweet, if it passes all filters,
  *   render tweet (light blue outline div)
@@ -144,6 +185,7 @@ var run = function() {
 $('document').ready(function() {
 
     renderFilterInput();
+    bindFilterUIEvents();
     run(); // for testing css
 
     $('#tweet_handle_form').submit(function(e) {
