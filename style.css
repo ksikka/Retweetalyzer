@@ -17,3 +17,10 @@
 .tweet-group:hover {
     border-color: #428bca;
 }
+
+.retweet-sect img {
+    margin: 2px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}

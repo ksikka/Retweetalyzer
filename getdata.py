@@ -53,14 +53,36 @@ def twitterreq(url, method, parameters):
 
   return response
 
-def fetchsamples():
-  url = "https://api.twitter.com/1.1/statuses/user_timeline.json"
-  parameters = {'screen_name':'ibmrational'}
-  response_stream = twitterreq(url, "GET", parameters)
-  response = json.load(response_stream)
-  outfile = open('data.json', 'w')
-  json.dump(response, outfile)
+def get_user_timeline(username):
+  response_stream = twitterreq("https://api.twitter.com/1.1/statuses/user_timeline.json", "GET", {'screen_name':username})
+  tweets = json.load(response_stream)
+  return tweets
+
+def get_retweets(tweet_id_str):
+  response_stream = twitterreq("https://api.twitter.com/1.1/statuses/retweets/%s.json" % tweet_id_str, "GET", {})
+  retweets = json.load(response_stream)
+  return retweets
 
 if __name__ == '__main__':
-  fetchsamples()
-  print "stored in data.json"
+  # TODO check for weird injections
+
+  # tweets = get_user_timeline('ibmrational')
+  # outfile = open('data.json', 'w')
+  # json.dump(tweets, outfile)
+  # print "stored in data.json"
+
+
+  tweets = json.load(open('data.json'))
+
+  retweet_data = []
+
+  for t in tweets:
+      if not t['retweeted'] and t['retweet_count'] > 0:
+          retweets = get_retweets(t['id_str'])
+          retweet_data.append(retweets)
+      else:
+          print "skipping..."
+
+  outfile = open('retweet_data.json', 'w')
+  json.dump(retweet_data, outfile)
+  print "stored in retweet_data.json"
