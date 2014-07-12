@@ -1,5 +1,27 @@
 
 var templates = {
+    filter_input: [
+'          <p>',
+'            <select class="form-control">',
+'              <option>Show</option>',
+'              <option>Hide</option>',
+'            </select>',
+'          retweets where',
+'            <select class="form-control code-font">',
+'              <option>user.description</option>',
+'              <option>user.screen_name</option>',
+'            </select>',
+'',
+'            <select class="form-control">',
+'              <option>contains</option>',
+'              <option>is exactly</option>',
+'            </select>',
+'',
+'            <input class="form-control" size="10" type="text" placeholder="some text"/>',
+'',
+'            <button class="form-control btn btn-primary glyphicon glyphicon-plus"></button>',
+'          </p>',
+'      </div>'].join('\n'),
     tweet: _.template('<div class="col-md-6"><div class="tweet-group">' +
                       '<div class="retweet-sect">' +
                           '<h4>Retweeted by (<%- retweet_count %>):</h4>' +
@@ -20,6 +42,10 @@ var tweets, retweet_data;
 
 var retweetFilters = [];
 retweetFilters.push({predicate_fn:function(thing) { return thing.user.screen_name.indexOf('imran') === 0; }}); // XXX for testing
+
+var renderFilterInput = function() {
+    $('#filter-entry-area').html(templates.filter_input);
+};
 
 var applyFilters = function(collection, filters) {
     _.each(collection, function(thing) {
@@ -117,6 +143,7 @@ var run = function() {
 
 $('document').ready(function() {
 
+    renderFilterInput();
     run(); // for testing css
 
     $('#tweet_handle_form').submit(function(e) {

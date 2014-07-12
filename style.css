@@ -1,3 +1,25 @@
+.rt-section {
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+
+    padding: 15px 30px;
+    margin-bottom: 30px;
+}
+
+.filter-ui {
+    background-color: #eee;
+}
+
+.filter-ui.form-inline * {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.code-font {
+    font-family: Menlo, Monaco, Consolas, monospace;
+}
+
 .tweet-group {
     margin: 8px;
     padding: 12px;

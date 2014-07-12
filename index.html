@@ -35,13 +35,34 @@
 
             <form id="tweet_handle_form" class="form-inline" style="text-align:left" role="form">
               <label class="sr-only" for="twitter_handle_input">Enter your twitter handle:</label>
-              <input autofocus type="text" class="input-lg form-control" style="max-width:14em" id="twitter_handle_input" placeholder="@twitter">
+              <div class="input-group">
+                <span class="input-group-addon">@</span>
+                <input autofocus type="text" class="input-lg form-control" style="max-width:10em" id="twitter_handle_input" placeholder="Username">
+              </div>
               <button type="submit" class="btn btn-lg btn-success" role="button">Generate Stats</button>
             </form>
         </div>
       </div>
 
-      <div id="results" class="row marketing">
+      <div class="row rt-section filter-ui form-inline">
+          <h3>Filters</h3>
+          <div id="filter-entry-area">
+          </div>
+          <div id="filter-list">
+          </div>
+      </div>
+
+
+
+      <div class="row">
+          <ul>
+            <li>Collected 20 tweets from Twitter</li>
+            <li>Total retweets: 40</li>
+            <li>Total retweets after filter: 20</li>
+          </ul>
+
+        <div id="results">
+        </div>
       </div>
 
       <div class="footer">
