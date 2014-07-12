@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Retweetalyzer</title>
+
+    <link href="bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="jumbotron-narrow.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a onclick="alert('What more is there to know?')" href="#">About</a></li>
+          <li><a target="_blank" href="https://twitter.com/ksikkaa">Contact</a></li>
+        </ul>
+        <h3 class="text-muted">Retweetalyzer</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>Got retweets?</h1>
+        <h2>Let's take a look.</h2>
+        <br>
+        <div style="margin:0 auto; max-width: 28em">
+            <p class="lead" style="text-align:left">Enter your twitter handle to begin:</p>
+
+            <form id="tweet_handle_form" class="form-inline" style="text-align:left" role="form">
+              <label class="sr-only" for="twitter_handle_input">Enter your twitter handle:</label>
+              <input autofocus type="text" class="input-lg form-control" style="max-width:14em" id="twitter_handle_input" placeholder="@twitter">
+              <button type="submit" class="btn btn-lg btn-success" role="button">Generate Stats</button>
+            </form>
+        </div>
+      </div>
+
+      <div id="results" class="row marketing">
+      </div>
+
+      <div class="footer">
+        <p>&copy; Karan Sikka 2014</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <script src="jquery-1.11.1.min.js"></script>
+    <script src="underscore-min.js"></script>
+    <script src="list-1.1.1.min.js"></script>
+    <script src="main.js"></script>
+    <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

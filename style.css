@@ -1,0 +1,19 @@
+.tweet-group {
+    margin: 8px;
+    padding: 12px;
+
+    border: solid 1px;
+    border-color: rgba(0,0,0,0);
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+
+    -webkit-transition: all 0.35s linear;
+    -moz-transition: all 0.35s linear;
+    -o-transition: all 0.35s linear;
+    -ms-transition: all 0.35s linear;
+    transition: all 0.35s linear;
+}
+.tweet-group:hover {
+    border-color: #428bca;
+}
