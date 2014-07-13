@@ -1,0 +1,5 @@
+oauth2
+urllib2
+json
+pprint
+couchdb
