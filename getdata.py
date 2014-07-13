@@ -2,15 +2,9 @@ import oauth2 as oauth
 import urllib2 as urllib
 import json
 import pprint
-import couchdb
 import os
 
-couch_url = 'https://f2e77221-edde-41c2-a4d7-9f6943f832d7-bluemix.cloudant.com/' if 'VCAP_SERVICES' in os.environ else None
-
-couch = couchdb.Server()
-
-userdb = couch['users']
-datadb = couch['data']
+from cache import cache
 
 cred_fp = open('creds.json')
 creds = json.load(cred_fp)

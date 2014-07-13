@@ -1,9 +1,23 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, json
 app = Flask(__name__)
+
+import getdata
 
 @app.route('/')
 def main():
     return render_template('index.html')
+
+@app.route('/<username>/data.json')
+def userdata(username):
+    if username.startswith('@'):
+        username = username[1:]
+
+    if username == '':
+        return 'Blank Username', 400
+
+    data = getdata.get_user_timeline(username)
+
+    return json.dumps(data)
 
 @app.route('/static/<path:path>')
 def static_proxy(path):
@@ -11,4 +25,4 @@ def static_proxy(path):
     return app.send_static_file('static/'+path)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
