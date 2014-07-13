@@ -2,6 +2,15 @@ import oauth2 as oauth
 import urllib2 as urllib
 import json
 import pprint
+import couchdb
+import os
+
+couch_url = 'https://f2e77221-edde-41c2-a4d7-9f6943f832d7-bluemix.cloudant.com/' if 'VCAP_SERVICES' in os.environ else None
+
+couch = couchdb.Server()
+
+userdb = couch['users']
+datadb = couch['data']
 
 cred_fp = open('creds.json')
 creds = json.load(cred_fp)
@@ -72,6 +81,7 @@ if __name__ == '__main__':
   # print "stored in data.json"
 
 
+  """
   tweets = json.load(open('data.json'))
 
   retweet_data = []
@@ -86,3 +96,4 @@ if __name__ == '__main__':
   outfile = open('retweet_data.json', 'w')
   json.dump(retweet_data, outfile)
   print "stored in retweet_data.json"
+  """
