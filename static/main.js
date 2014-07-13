@@ -159,7 +159,7 @@ var renderResults = function() {
             retweet_index ++;
             var retweets = retweet_data[retweet_index];
             var rt_count_offset = t.retweet_count - retweets.length;
-            if (rt_count_offset > 0) alert('yo');
+            //if (rt_count_offset > 0) alert('yo');
             retweets = _.filter(retweets, function(rt) { return rt._state.activated; });
             retweet_count = retweets.length + rt_count_offset;
             retweet_html = _.map(retweets, templates.rt_head).join('');
@@ -179,19 +179,24 @@ var processing = false;
 var run = function() {
 
     var $submitButton = $('#tweet_handle_form button[type="submit"]');
+    var username = $('#tweet_handle_form input[type="text"]').val();
+    if (username === '') {
+        alert('Please enter your twitter username');
+        return;
+    }
     $submitButton.addClass('disabled');
     processing = true;
 
 
     $.ajax({
         dataType: 'json',
-        url: 'data.json',
+        url: '/'+username+'/data.json',
         success: function(data) {
             tweets = data; // TODO should prolly check if this is for real.
 
             $.ajax({
                 dataType: 'json',
-                url: 'retweet_data.json',
+                url: '/'+username+'/retweet_data.json',
                 success: function(data2) {
                     retweet_data = data2; // TODO should prolly check if this is for real.
                     _.each(retweet_data, function(rt_list) {
@@ -215,7 +220,7 @@ $('document').ready(function() {
 
     renderFilterInput();
     bindFilterUIEvents();
-    run(); // for testing css
+    //run(); // for testing css
 
     $('#tweet_handle_form').submit(function(e) {
         e.preventDefault();
