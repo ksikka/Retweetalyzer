@@ -15,7 +15,20 @@ def userdata(username):
     if username == '':
         return 'Blank Username', 400
 
-    data = getdata.get_user_timeline(username)
+    data = getdata.get_user_timeline(username)['tweets']
+
+    return json.dumps(data)
+
+@app.route('/<username>/retweet_data.json')
+def retweetdata(username):
+    if username.startswith('@'):
+        username = username[1:]
+
+    if username == '':
+        return 'Blank Username', 400
+
+    tweets = getdata.get_user_timeline(username)['tweets']
+    data = getdata.get_retweet_data(tweets)
 
     return json.dumps(data)
 
