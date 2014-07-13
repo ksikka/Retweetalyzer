@@ -14,12 +14,12 @@
 
 #filter-list {
     background-color: white;
-    margin: 30px 30px 0 30px;
+    margin: 0px 30px 30px 30px;
 }
 
 .filter-ui.form-inline * {
-    margin-left: 3px;
-    margin-right: 3px;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 .code-font {

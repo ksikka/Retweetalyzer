@@ -22,9 +22,9 @@ var templates = {
 '          </p>',
 '      </div>'].join('\n'),
     filter_list_item: _.template([
-'                      <tr>',
+'                      <tr id="filter-listing-<%- id %>">',
 '                          <td><%- toIncludeStr %> retweets where <code>user.<%- field %></code> <%- operation %> <%- data %></td>',
-'                          <td><button type="button" class="btn btn-danger btn-xs pull-right glyphicon glyphicon-remove"></button></td>',
+'                          <td><button type="button" class="btn btn-danger btn-xs pull-right glyphicon glyphicon-remove filter-remove-button" data-filter-id="<%- id %>"></button></td>',
 '                      </tr>',].join('\n')),
     tweet: _.template('<div class="col-md-6"><div class="tweet-group">' +
                       '<div class="retweet-sect">' +
@@ -52,6 +52,7 @@ var constructFilter = function(toIncludeOrExclude, field, operation, data) {
         toInclude: toIncludeOrExclude,
         toIncludeStr: toIncludeOrExclude ? 'Show' : 'Hide',
         field: field,
+        id: String(Number(new Date())),
         operation: operation,
         data: data,
         predicate_fn: function(thing) {
@@ -78,8 +79,10 @@ var addFilter = function(filter) {
 
 var removeFilter = function(filter) {
     var index = retweetFilters.indexOf(filter);
+    $('#filter-listing-'+filter.id).remove();
     retweetFilters.splice(index, 1);
-    // todo update ui
+    _.each(retweet_data, function(rt_list) { applyFilters(rt_list, retweetFilters) });
+    renderResults();
 };
 
 var bindFilterUIEvents = function() {
@@ -94,6 +97,11 @@ var bindFilterUIEvents = function() {
                                      ['contains', 'is exactly'][operationIndex],
                                      dataValue);
         addFilter(filter);
+    });
+    $('#filter-list').delegate('.filter-remove-button', 'click', function() {
+        var filterId = String($(this).data('filter-id'));
+        var filter = _.findWhere(retweetFilters, { id: filterId });
+        removeFilter(filter);
     });
 };
 
