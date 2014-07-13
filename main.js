@@ -2,7 +2,7 @@ var templates = {
     filter_input: [
 '          <p>',
 '            <select class="filter-data-include form-control">',
-'              <option>Show</option>',
+'              <option>Only show</option>',
 '              <option>Hide</option>',
 '            </select>',
 '          retweets where',
@@ -50,7 +50,7 @@ var retweetFilters = [];
 var constructFilter = function(toIncludeOrExclude, field, operation, data) {
     var filter = {
         toInclude: toIncludeOrExclude,
-        toIncludeStr: toIncludeOrExclude ? 'Show' : 'Hide',
+        toIncludeStr: toIncludeOrExclude ? 'Only show' : 'Hide',
         field: field,
         id: String(Number(new Date())),
         operation: operation,
@@ -58,10 +58,10 @@ var constructFilter = function(toIncludeOrExclude, field, operation, data) {
         predicate_fn: function(thing) {
             if (operation === 'contains') {
                 if (thing.user[field].toLowerCase().indexOf(data.toLowerCase()) !== -1)
-                    return toIncludeOrExclude;
+                    return true;
             } else if (operation === 'is exactly') {
                 if (thing.user[field].toLowerCase() === data.toLowerCase())
-                    return toIncludeOrExclude;
+                    return true;
             } else {
                 alert('oops: '+operation);
             }
@@ -118,13 +118,17 @@ var applyFilters = function(collection, filters) {
     } else {
         _.each(collection, function(thing) {
             var filter;
-            var to_activate = false;
+            var to_activate = true;
             for (var i = 0; i < filters.length; i ++) {
                 filter = filters[i];
                 if (filter.predicate_fn(thing)) {
-                    to_activate = true;
-                    alert('wat');
+                    to_activate = filter.toInclude;
                     break;
+                } else {
+                    if (filter.toInclude) {
+                        to_activate = false;
+                        break;
+                    }
                 }
             }
             thing._state.activated = to_activate;

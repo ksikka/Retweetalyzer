@@ -17,10 +17,11 @@
     margin: 0px 30px 30px 30px;
 }
 
+/*
 .filter-ui.form-inline * {
     margin-left: 2px;
     margin-right: 2px;
-}
+}*/
 
 .code-font {
     font-family: Menlo, Monaco, Consolas, monospace;
