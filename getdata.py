@@ -4,10 +4,10 @@ import json
 import pprint
 import os
 
-from cache import cache
+import cache
 
-cred_fp = open('creds.json')
-creds = json.load(cred_fp)
+creds = json.load(open('creds.json'))
+
 api_key = creds['api_key']
 api_secret = creds['api_secret']
 access_token_key = creds['access_token_key']
@@ -56,20 +56,21 @@ def twitterreq(url, method, parameters):
 
   return response
 
+@cache.memoized('timeline_data')
 def get_user_timeline(username):
   response_stream = twitterreq("https://api.twitter.com/1.1/statuses/user_timeline.json", "GET", {'screen_name':username})
-  tweets = json.load(response_stream)
+  tweets = {'tweets': json.load(response_stream)}
   return tweets
 
 def get_retweets(tweet_id_str):
   response_stream = twitterreq("https://api.twitter.com/1.1/statuses/retweets/%s.json" % tweet_id_str, "GET", {})
-  retweets = json.load(response_stream)
+  retweets = {'retweets': json.load(response_stream)}
   return retweets
 
 if __name__ == '__main__':
   # TODO check for weird injections
 
-  # tweets = get_user_timeline('ibmrational')
+  # tweets = get_user_timeline('ibmrational')['tweets']
   # outfile = open('data.json', 'w')
   # json.dump(tweets, outfile)
   # print "stored in data.json"
@@ -82,7 +83,7 @@ if __name__ == '__main__':
 
   for t in tweets:
       if not t['retweeted'] and t['retweet_count'] > 0:
-          retweets = get_retweets(t['id_str'])
+          retweets = get_retweets(t['id_str'])['retweets']
           retweet_data.append(retweets)
       else:
           print "skipping..."
