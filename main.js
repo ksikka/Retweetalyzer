@@ -21,6 +21,11 @@ var templates = {
 '            <button class="form-control btn btn-primary glyphicon glyphicon-plus filter-add-button"></button>',
 '          </p>',
 '      </div>'].join('\n'),
+    filter_list_item: _.template([
+'                      <tr>',
+'                          <td><%- toIncludeStr %> retweets where <code>user.<%- field %></code> <%- operation %> <%- data %></td>',
+'                          <td><button type="button" class="btn btn-danger btn-xs pull-right glyphicon glyphicon-remove"></button></td>',
+'                      </tr>',].join('\n')),
     tweet: _.template('<div class="col-md-6"><div class="tweet-group">' +
                       '<div class="retweet-sect">' +
                           '<h4>Retweeted by (<%- retweet_count %>):</h4>' +
@@ -45,16 +50,19 @@ var retweetFilters = [];
 var constructFilter = function(toIncludeOrExclude, field, operation, data) {
     var filter = {
         toInclude: toIncludeOrExclude,
+        toIncludeStr: toIncludeOrExclude ? 'Show' : 'Hide',
         field: field,
         operation: operation,
         data: data,
         predicate_fn: function(thing) {
-            if (operation === 'contains' && thing.user[field].toLowerCase().indexOf(data.toLowerCase()) !== -1) {
-                return toIncludeOrExclude;
-            } else if (operation === 'equals' && thing.user[field].toLowerCase() === data.toLowerCase()) {
-                return toIncludeOrExclude;
+            if (operation === 'contains') {
+                if (thing.user[field].toLowerCase().indexOf(data.toLowerCase()) !== -1)
+                    return toIncludeOrExclude;
+            } else if (operation === 'is exactly') {
+                if (thing.user[field].toLowerCase() === data.toLowerCase())
+                    return toIncludeOrExclude;
             } else {
-                alert('oops');
+                alert('oops: '+operation);
             }
         }
     };
@@ -63,10 +71,11 @@ var constructFilter = function(toIncludeOrExclude, field, operation, data) {
 
 var addFilter = function(filter) {
     retweetFilters.push(filter);
-    // todo update ui
     _.each(retweet_data, function(rt_list) { applyFilters(rt_list, retweetFilters) });
+    $('#filter-list tbody').append(templates.filter_list_item(filter));
     renderResults();
 };
+
 var removeFilter = function(filter) {
     var index = retweetFilters.indexOf(filter);
     retweetFilters.splice(index, 1);
@@ -82,7 +91,7 @@ var bindFilterUIEvents = function() {
 
         var filter = constructFilter([true, false][includeIndex],
                                      ['description','screen_name'][fieldIndex],
-                                     ['contains', 'equals'][operationIndex],
+                                     ['contains', 'is exactly'][operationIndex],
                                      dataValue);
         addFilter(filter);
     });
@@ -92,19 +101,27 @@ var renderFilterInput = function() {
     $('#filter-entry-area').html(templates.filter_input);
 };
 
+/* Pseudo filters in that we OR the predicates, and if no filters, then all activated. */
 var applyFilters = function(collection, filters) {
-    _.each(collection, function(thing) {
-        var filter;
-        var to_activate = true; // assume passes all filters, and try to disprove.
-        for (var i = 0; i < filters.length; i ++) {
-            filter = filters[i];
-            if (!filter.predicate_fn(thing)) {
-                to_activate = false;
-                break;
+    if (filters.length === 0) {
+        _.each(collection, function(thing) {
+            thing._state.activated = true;
+        });
+    } else {
+        _.each(collection, function(thing) {
+            var filter;
+            var to_activate = false;
+            for (var i = 0; i < filters.length; i ++) {
+                filter = filters[i];
+                if (filter.predicate_fn(thing)) {
+                    to_activate = true;
+                    alert('wat');
+                    break;
+                }
             }
-        }
-        thing._state.activated = to_activate;
-    });
+            thing._state.activated = to_activate;
+        });
+    }
 };
 
 
