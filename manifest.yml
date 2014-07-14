@@ -1,0 +1,9 @@
+---
+applications:
+- name: retweetalyzer-v1
+  memory: 512M
+  buildpack: https://github.com/cloudfoundry/buildpack-python.git
+  host: retweetalyzer
+  command: python server.py
+  services:
+  - Cloudant NoSQL DB-2m
