@@ -2,6 +2,7 @@ from flask import Flask, render_template, json, redirect
 app = Flask(__name__)
 
 import getdata
+import os
 
 @app.route('/')
 def main():

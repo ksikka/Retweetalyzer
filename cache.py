@@ -12,11 +12,14 @@ import couchdb
 import time
 
 import os
+"""
 if 'VCAP_SERVICES' in os.environ:
     couch_url = 'https://f2e77221-edde-41c2-a4d7-9f6943f832d7-bluemix.cloudant.com/' 
     couch = couchdb.Server(couch_url)
 else:
     couch = couchdb.Server()
+"""
+couch = couchdb.Server()
 
 class memoized(object):
    '''Decorator. Caches a function's return value each time it is called.
