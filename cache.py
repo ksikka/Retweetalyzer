@@ -15,8 +15,7 @@ import json
 import os
 
 if 'VCAP_SERVICES' in os.environ:
-    #x = os.environ['VCAP_SERVICES']
-    x = """{"cloudantNoSQLDB":[{"name":"Cloudant NoSQL DB-2m","label":"cloudantNoSQLDB","tags":["ibm_created","data_management"],"plan":"Shared","credentials":{"username":"f2e77221-edde-41c2-a4d7-9f6943f832d7-bluemix","password":"225d3e2988ecaf3ac558e16eb3b35075a5a21a8bbbd73920ae9b1efcc7fc02bb","host":"f2e77221-edde-41c2-a4d7-9f6943f832d7-bluemix.cloudant.com","port":443,"url":"https://f2e77221-edde-41c2-a4d7-9f6943f832d7-bluemix:225d3e2988ecaf3ac558e16eb3b35075a5a21a8bbbd73920ae9b1efcc7fc02bb@f2e77221-edde-41c2-a4d7-9f6943f832d7-bluemix.cloudant.com"}}]}"""
+    x = os.environ['VCAP_SERVICES']
     creds = json.loads(x)['cloudantNoSQLDB'][0]['credentials']
     couch = couchdb.Server(creds['url'])
     # warning: undocumented
