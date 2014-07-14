@@ -17,7 +17,8 @@ import os
 if 'VCAP_SERVICES' in os.environ:
     x = os.environ['VCAP_SERVICES']
     creds = json.loads(x)['cloudantNoSQLDB'][0]['credentials']
-    couch = couchdb.Server(creds['url'])
+    # the encode at the end of the url fixes this: https://code.google.com/p/couchdb-python/issues/detail?id=235
+    couch = couchdb.Server(creds['url'].encode('utf-8'))
     # warning: undocumented
     couch.resource.credentials = (creds['username'], creds['password'])
 else:
